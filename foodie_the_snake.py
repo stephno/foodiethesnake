@@ -6,8 +6,10 @@ a snake game developed with Python 3.7 and the Arcade library.
 import arcade
 
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 200
+SCREEN_HEIGHT = 200
+RIGHT_SW_LIMIT =  SCREEN_WIDTH - 10
+BOTTOM_SH_LIMIT = SCREEN_HEIGHT + 10
 FOODIE_COLOR = arcade.color.BRIGHT_GREEN
 
 
@@ -34,9 +36,23 @@ class Snake:
     def move_down(self):
         self.y -= 1
 
-    def update(self):
+    def update_position(self):
         """Update the head’s position."""
-        self.mv_right()
+        if (self.x <= RIGHT_SW_LIMIT) and (self.y == SCREEN_HEIGHT):
+            self.move_right()
+
+        if (self.x >= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT):
+            self.move_down()
+
+        # if (self.x > RIGHT_SW_LIMIT) and (self.y <= BOTTOM_SH_LIMIT):
+        #     self.move_left()
+
+        # if (self.x <= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT):
+        #     self.move_up()
+
+
+        # if self.y <= SCREEN_HEIGHT :
+        #     self.move_up()
 
 
 class TheApp(arcade.Window):
@@ -54,10 +70,10 @@ class TheApp(arcade.Window):
         arcade.start_render()
         self.foodie.draw_snake()
 
-    def update_position(self, delta_time):
+    def update(self, delta_time):
         """ Called to update our objects.
         Happens approximately 60 times per second."""
-        self.foodie.update()
+        self.foodie.update_position()
 
 
 def app():
