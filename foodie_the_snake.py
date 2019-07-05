@@ -5,12 +5,13 @@ a snake game developed with Python 3.7 and the Arcade library.
 
 import arcade
 
-
-SCREEN_WIDTH = 200
-SCREEN_HEIGHT = 200
-RIGHT_SW_LIMIT =  SCREEN_WIDTH - 10
-BOTTOM_SH_LIMIT = SCREEN_HEIGHT + 10
+FOODIE_HEAD_SIZE = 10
 FOODIE_COLOR = arcade.color.BRIGHT_GREEN
+
+SCREEN_WIDTH = 100
+SCREEN_HEIGHT = 100
+RIGHT_SW_LIMIT =  SCREEN_WIDTH - 10
+BOTTOM_SH_LIMIT = FOODIE_HEAD_SIZE
 
 
 class Snake:
@@ -20,8 +21,8 @@ class Snake:
         self.color = color
 
     def draw_snake(self):
-        arcade.draw_lrtb_rectangle_filled(self.x, (self.x + 10),
-                                          self.y, (self.y - 10),
+        arcade.draw_lrtb_rectangle_filled(self.x, (self.x + FOODIE_HEAD_SIZE),
+                                          self.y, (self.y - FOODIE_HEAD_SIZE),
                                           self.color)
 
     def move_right(self):
@@ -38,21 +39,21 @@ class Snake:
 
     def update_position(self):
         """Update the head’s position."""
-        if (self.x <= RIGHT_SW_LIMIT) and (self.y == SCREEN_HEIGHT):
+        if (self.y == SCREEN_HEIGHT) and (self.x >= 0) \
+                                     and (self.x < RIGHT_SW_LIMIT):
             self.move_right()
 
-        if (self.x >= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT):
+        if (self.x >= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT) \
+                                      and (self.y > BOTTOM_SH_LIMIT):
             self.move_down()
 
-        # if (self.x > RIGHT_SW_LIMIT) and (self.y <= BOTTOM_SH_LIMIT):
-        #     self.move_left()
+        if (self.y == BOTTOM_SH_LIMIT) and (self.x <= RIGHT_SW_LIMIT) \
+                                       and (self.x > 0):
+            self.move_left()
 
-        # if (self.x <= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT):
-        #     self.move_up()
-
-
-        # if self.y <= SCREEN_HEIGHT :
-        #     self.move_up()
+        if (self.x == 0) and (self.y >= BOTTOM_SH_LIMIT) \
+                         and (self.y < SCREEN_HEIGHT):
+            self.move_up()
 
 
 class TheApp(arcade.Window):
