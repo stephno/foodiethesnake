@@ -8,17 +8,24 @@ import arcade
 FOODIE_HEAD_SIZE = 10
 FOODIE_COLOR = arcade.color.BRIGHT_GREEN
 
-SCREEN_WIDTH = 100
-SCREEN_HEIGHT = 100
-RIGHT_SW_LIMIT =  SCREEN_WIDTH - 10
+UP = 0
+RIGHT = 3
+DOWN = 6
+LEFT = 9
+DEFAULT_DIRECTION = UP
+
+SCREEN_WIDTH = 200
+SCREEN_HEIGHT = 200
+RIGHT_SW_LIMIT = SCREEN_WIDTH - 10
 BOTTOM_SH_LIMIT = FOODIE_HEAD_SIZE
 
 
 class Snake:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, direction, color):
         self.x = x
         self.y = y
         self.color = color
+        self.direction = direction
 
     def draw_snake(self):
         arcade.draw_lrtb_rectangle_filled(self.x, (self.x + FOODIE_HEAD_SIZE),
@@ -39,21 +46,17 @@ class Snake:
 
     def update_position(self):
         """Update the head’s position."""
-        if (self.y == SCREEN_HEIGHT) and (self.x >= 0) \
-                                     and (self.x < RIGHT_SW_LIMIT):
+        if self.direction == UP:
+            self.move_up()
+
+        if self.direction == RIGHT:
             self.move_right()
 
-        if (self.x >= RIGHT_SW_LIMIT) and (self.y <= SCREEN_HEIGHT) \
-                                      and (self.y > BOTTOM_SH_LIMIT):
+        if self.direction == DOWN:
             self.move_down()
 
-        if (self.y == BOTTOM_SH_LIMIT) and (self.x <= RIGHT_SW_LIMIT) \
-                                       and (self.x > 0):
+        if self.direction == LEFT:
             self.move_left()
-
-        if (self.x == 0) and (self.y >= BOTTOM_SH_LIMIT) \
-                         and (self.y < SCREEN_HEIGHT):
-            self.move_up()
 
 
 class TheApp(arcade.Window):
@@ -65,7 +68,8 @@ class TheApp(arcade.Window):
         arcade.set_background_color((102, 51, 0))
 
         # Create Foodie
-        self.foodie = Snake(0, SCREEN_HEIGHT, FOODIE_COLOR)
+        self.foodie = Snake((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2),
+                            DEFAULT_DIRECTION, FOODIE_COLOR)
 
     def on_draw(self):
         arcade.start_render()
@@ -75,6 +79,17 @@ class TheApp(arcade.Window):
         """ Called to update our objects.
         Happens approximately 60 times per second."""
         self.foodie.update_position()
+
+    def on_key_press(self, key, modifiers):
+        """Called whenever a key is pressed."""
+        if key == arcade.key.UP:
+            self.foodie.direction = UP
+        if key == arcade.key.RIGHT:
+            self.foodie.direction = RIGHT
+        if key == arcade.key.DOWN:
+            self.foodie.direction = DOWN
+        if key == arcade.key.LEFT:
+            self.foodie.direction = LEFT
 
 
 def app():
