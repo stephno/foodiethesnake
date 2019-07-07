@@ -44,19 +44,29 @@ class Snake:
     def move_down(self):
         self.y -= 1
 
-    def update_position(self):
+    def update_position(self, game_state):
         """Update the head’s position."""
-        if self.direction == UP:
-            self.move_up()
+        self.game_state = game_state
+        if not self.game_state:
+            if self.direction == UP:
+                self.move_up()
 
-        if self.direction == RIGHT:
-            self.move_right()
+            if self.direction == RIGHT:
+                self.move_right()
 
-        if self.direction == DOWN:
-            self.move_down()
+            if self.direction == DOWN:
+                self.move_down()
 
-        if self.direction == LEFT:
-            self.move_left()
+            if self.direction == LEFT:
+                self.move_left()
+
+    def check_collision(self):
+        if (self.x < 0) or (self.x > RIGHT_SW_LIMIT) \
+                        or (self.y > SCREEN_HEIGHT) \
+                        or (self.y < BOTTOM_SH_LIMIT):
+            game_over = True
+            
+            return game_over
 
 
 class TheApp(arcade.Window):
@@ -78,7 +88,9 @@ class TheApp(arcade.Window):
     def update(self, delta_time):
         """ Called to update our objects.
         Happens approximately 60 times per second."""
-        self.foodie.update_position()
+        game_over = False
+        game_state = self.foodie.check_collision()
+        self.foodie.update_position(game_state)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
